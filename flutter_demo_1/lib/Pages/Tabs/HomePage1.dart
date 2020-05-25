@@ -5,6 +5,10 @@ class HomePage1 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    return Text("HomePage");
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("首页"),
+      ),
+    );
   }
 }

@@ -5,6 +5,8 @@ import 'Tabs/SearchPage.dart';
 import 'Tabs/SettingPage.dart';
 
 class Tabs extends StatefulWidget {
+  final Map arguments;
+  Tabs({this.arguments});
   @override
   State<StatefulWidget> createState() {
     // TODO: implement createState
@@ -20,9 +22,6 @@ class _TabsState extends State<StatefulWidget> {
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
-      appBar: AppBar(
-        title: Text("demo"),
-      ),
       body: this.pages[this._currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         items: [
