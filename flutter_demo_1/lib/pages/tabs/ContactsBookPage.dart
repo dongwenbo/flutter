@@ -15,16 +15,13 @@ class ContactsBookPage extends StatelessWidget {
           IconButton(icon: Icon(Icons.add), onPressed: () {})
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        child: Text("进入表单页面"),
-        onPressed: () {
-//          Navigator.of(context).push(
-//            MaterialPageRoute(builder: (context)=>FormPage(title: "页面传值",))
-//          );
+      body: Center(
+        child: RaisedButton(onPressed: (){
           Navigator.pushNamed(context, "/formPage",
               arguments: {"formId": "1234"});
-        },
+        }),
       ),
+
     );
   }
 }
