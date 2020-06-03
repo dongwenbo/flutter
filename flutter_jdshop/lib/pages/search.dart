@@ -7,7 +7,7 @@ class SearchPage extends StatefulWidget {
     return _SearchPageState();
   }
 }
-class _SearchPageState extends State<StatefulWidget> {
+class _SearchPageState extends State<SearchPage> {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build

@@ -12,25 +12,44 @@ class Tabs extends StatefulWidget {
   }
 }
 
-class _TabsState extends State<StatefulWidget> {
+class _TabsState extends State<Tabs> {
   int _currentIndex = 0;
-  List _pageList = [
+  List<Widget> _pageList = [
     MyHomePage(),
     CategoryPage(),
     CartPage(),
     MinePage()
   ];
+  PageController _pageController;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    this._pageController = PageController(initialPage: this._currentIndex);
+  }
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
       appBar: AppBar(title: Text("jdshop"),),
-      body: this._pageList[this._currentIndex],
+//1、不保持页面状态
+//    body: this._pageList[this._currentIndex],
+//2、全部保持页面状态
+//      body: IndexedStack(
+//        index: this._currentIndex,
+//        children: this._pageList,
+//      ),
+//3、部分页面保持页面状态
+      body: PageView(
+        controller: this._pageController,
+        children: this._pageList,
+      ),
       bottomNavigationBar: BottomNavigationBar(
           currentIndex: this._currentIndex,
           onTap: (index) {
             setState(() {
               this._currentIndex = index;
+              this._pageController.jumpToPage(index);
             });
           },
           type: BottomNavigationBarType.fixed,

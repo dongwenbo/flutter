@@ -7,7 +7,7 @@ class MinePage extends StatefulWidget {
     return _MinePageState();
   }
 }
-class _MinePageState extends State<StatefulWidget> {
+class _MinePageState extends State<MinePage> {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
