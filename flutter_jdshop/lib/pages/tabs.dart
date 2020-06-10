@@ -3,6 +3,7 @@ import 'home.dart';
 import 'category.dart';
 import 'cart.dart';
 import 'mine.dart';
+import '../services/screenAdapter.dart';
 
 class Tabs extends StatefulWidget {
   @override
@@ -27,11 +28,33 @@ class _TabsState extends State<Tabs> {
     super.initState();
     this._pageController = PageController(initialPage: this._currentIndex);
   }
+
   @override
   Widget build(BuildContext context) {
+    ScreenAdapter.init(context);
     // TODO: implement build
     return Scaffold(
-      appBar: AppBar(title: Text("jdshop"),),
+      appBar: AppBar(
+        title: RawMaterialButton(
+          onPressed: () {
+            Navigator.pushNamed(context, "/search");
+          },
+          child: Row(
+            children: <Widget>[
+              Icon(Icons.search, size: ScreenAdapter.height(36),),
+              Text("搜索")
+            ],
+          ),
+          fillColor: Color.fromRGBO(233, 233, 233, 0.8),
+          padding: EdgeInsets.only(left: ScreenAdapter.width(20)),
+          shape: StadiumBorder(side: BorderSide.none),
+        ),
+        leading:
+            IconButton(icon: Icon(Icons.center_focus_weak), onPressed: () {}),
+        actions: <Widget>[
+          IconButton(icon: Icon(Icons.message), onPressed: () {})
+        ],
+      ),
 //1、不保持页面状态
 //    body: this._pageList[this._currentIndex],
 //2、全部保持页面状态
@@ -57,7 +80,8 @@ class _TabsState extends State<Tabs> {
           items: [
             BottomNavigationBarItem(icon: Icon(Icons.home), title: Text("首页")),
             BottomNavigationBarItem(
-              icon: Icon((Icons.category)), title: Text("分类"),
+              icon: Icon((Icons.category)),
+              title: Text("分类"),
             ),
             BottomNavigationBarItem(
                 icon: Icon((Icons.shopping_cart)), title: Text("购物车")),

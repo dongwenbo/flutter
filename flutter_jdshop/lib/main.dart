@@ -15,8 +15,12 @@ class _MyAppState extends State<StatefulWidget> {
   Widget build(BuildContext context) {
     // TODO: implement build
     return MaterialApp(
-        initialRoute: '/',
-        onGenerateRoute: onGenerateRoute,
+      initialRoute: '/',
+      onGenerateRoute: onGenerateRoute,
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        primaryColor: Colors.white
+      ),
     );
   }
 }

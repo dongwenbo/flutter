@@ -20,4 +20,8 @@ class ScreenAdapter {
   static screenWidth() {
     return ScreenUtil.screenWidth;
   }
+
+  static fontSize(double fontSize) {
+    return ScreenUtil().setSp(fontSize);
+  }
 }

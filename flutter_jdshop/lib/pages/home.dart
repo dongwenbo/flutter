@@ -102,53 +102,58 @@ class _MyHomePageState extends State<MyHomePage> with AutomaticKeepAliveClientMi
         children: this._bestProductList.map((value) {
           String picUrlString = AppConfig.domain +
               value.sPic.replaceAll('\\', '/');
-          return Container(
-            width: itemWidth,
-            padding: EdgeInsets.all(ScreenAdapter.height(20)),
-            decoration: BoxDecoration(border: Border.all(color: Colors.grey)),
-            child: Column(
-              children: <Widget>[
-                Container(
-                  width: double.infinity,
-                  child: AspectRatio(
-                    aspectRatio: 1 / 1,
-                    child: Image.network(
-                      '$picUrlString',
-                      fit: BoxFit.cover,
+          return InkWell(
+            child: Container(
+              width: itemWidth,
+              padding: EdgeInsets.all(ScreenAdapter.height(20)),
+              decoration: BoxDecoration(border: Border.all(color: Colors.grey)),
+              child: Column(
+                children: <Widget>[
+                  Container(
+                    width: double.infinity,
+                    child: AspectRatio(
+                      aspectRatio: 1 / 1,
+                      child: Image.network(
+                        '$picUrlString',
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
-                ),
-                Padding(
-                    padding: EdgeInsets.only(top: ScreenAdapter.height(12)),
-                    child: Text(
-                      '${value.title}',
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    )),
-                Container(
-                    height: ScreenAdapter.height(66),
-                    padding: EdgeInsets.only(top: ScreenAdapter.height(12)),
-                    child: Stack(children: <Widget>[
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          '¥${value.price}',
-                          style: TextStyle(color: Colors.red, fontSize: 20),
+                  Padding(
+                      padding: EdgeInsets.only(top: ScreenAdapter.height(12)),
+                      child: Text(
+                        '${value.title}',
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      )),
+                  Container(
+                      height: ScreenAdapter.height(66),
+                      padding: EdgeInsets.only(top: ScreenAdapter.height(12)),
+                      child: Stack(children: <Widget>[
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            '¥${value.price}',
+                            style: TextStyle(color: Colors.red, fontSize: 20),
+                          ),
                         ),
-                      ),
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: Text(
-                          '¥${value.oldPrice}',
-                          style: TextStyle(color: Colors.black54,
-                              fontSize: 15,
-                              decoration: TextDecoration.lineThrough),
-                        ),
-                      )
-                    ])
-                )
-              ],
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: Text(
+                            '¥${value.oldPrice}',
+                            style: TextStyle(color: Colors.black54,
+                                fontSize: 15,
+                                decoration: TextDecoration.lineThrough),
+                          ),
+                        )
+                      ])
+                  )
+                ],
+              ),
             ),
+            onTap: () {
+              Navigator.of(context).pushNamed("/productContent", arguments: {"productId": value.sId});
+            },
           );
         }).toList(),
         runSpacing: ScreenAdapter.width(20),
