@@ -2,7 +2,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ScreenAdapter {
   static init(context) {
-    ScreenUtil.init(context, width: 750, height: 1334, allowFontScaling: false);
+    ScreenUtil.init(context, width: ScreenAdapter.designWidth(), height: ScreenAdapter.designHeight(), allowFontScaling: false);
   }
 
   static height(double height) {
@@ -24,4 +24,14 @@ class ScreenAdapter {
   static fontSize(double fontSize) {
     return ScreenUtil().setSp(fontSize);
   }
+
+
+  static double designHeight() {
+    return 1334.0;
+  }
+
+  static double designWidth() {
+    return 750.0;
+  }
+
 }

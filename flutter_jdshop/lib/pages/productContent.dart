@@ -1,9 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import '../services/screenAdapter.dart';
 import 'productContentFirstPage.dart';
 import 'productContentSecondPage.dart';
 import 'productContentThirdPage.dart';
 import '../widget/cornerButtonWidget.dart';
+import 'package:dio/dio.dart';
+import '../apiConfig.dart';
+import '../appConfig.dart';
+import '../model/ProductContentModel.dart';
+import '../widget/loadingWidget.dart';
+import '../services/EventBus.dart';
+import '../services/cartService.dart';
+import '../provider/cartProvider.dart';
+import 'package:provider/provider.dart';
 
 class ProductContentPage extends StatefulWidget {
   final Map arguments;
@@ -33,6 +43,27 @@ class _ProductContentState extends State<ProductContentPage> {
             ),
           )
         ]);
+  }
+
+  //轮播图数据
+  ProductContentModel _productContentModel;
+  _fetchProductContentModelData() async {
+    String requestUrlString = AppConfig.domain +
+        ApiConfig.productContentApi +
+        "?id=${widget.arguments["productId"]}";
+    print(requestUrlString);
+    var respondData = await Dio().get(requestUrlString);
+    setState(() {
+      this._productContentModel =
+          ProductContentModel.fromJson(respondData.data);
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    this._fetchProductContentModelData();
   }
 
   @override
@@ -69,61 +100,108 @@ class _ProductContentState extends State<ProductContentPage> {
                   })
             ],
           ),
-          body: Stack(
-            children: <Widget>[
-              TabBarView(
-                children: <Widget>[
-                  ProductContentFirstPage(),
-                  ProductContentSecondPage(),
-                  ProductContentThirdPage()
-                ],
-              ),
-              Positioned(
-                  left: 0,
-                  bottom: 0,
-                  child: Container(
-                    width: ScreenAdapter.width(ScreenAdapter.screenWidth()),
-                    height: ScreenAdapter.height(100),
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border(
-                            top: BorderSide(
-                                color: Colors.black12,
-                                width: ScreenAdapter.height(2)))),
-                    child: Row(
-                      children: <Widget>[
-                        Container(
-                          width: ScreenAdapter.width(220),
-                          child: Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                Icon(Icons.shopping_cart),
-                                Text("购物车")
-                              ],
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          flex: 1,
-                          child: CornerButtonWidget(
-                            title: "加入购物车",
-                            bgColor: Colors.red,
-                            callbackHandle: () {},
-                          ),
-                        ),
-                        Expanded(
-                            flex: 1,
-                            child: CornerButtonWidget(
-                              title: "立即购买",
-                              bgColor: Colors.yellow,
-                              callbackHandle: () {},
-                            ))
-                      ],
+          body: (this._productContentModel != null)
+              ? Stack(
+                  children: <Widget>[
+                    Container(
+                      child: TabBarView(
+                        physics: NeverScrollableScrollPhysics(),
+                        children: <Widget>[
+                          ProductContentFirstPage(this._productContentModel),
+                          ProductContentSecondPage(this._productContentModel),
+                          ProductContentThirdPage()
+                        ],
+                      ),
+                      margin:
+                          EdgeInsets.only(bottom: ScreenAdapter.height(100)),
                     ),
-                  ))
-            ],
-          ),
+                    Positioned(
+                        left: 0,
+                        bottom: 0,
+                        child: Container(
+                          width:
+                              ScreenAdapter.width(ScreenAdapter.designWidth()),
+                          height: ScreenAdapter.height(100),
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              border: Border(
+                                  top: BorderSide(
+                                      color: Colors.black12,
+                                      width: ScreenAdapter.height(2)))),
+                          child: Row(
+                            children: <Widget>[
+                              Container(
+                                width: ScreenAdapter.width(220),
+                                child: InkWell(
+                                  child: Center(
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: <Widget>[
+                                        Icon(Icons.shopping_cart),
+                                        Text("购物车")
+                                      ],
+                                    ),
+                                  ),
+                                  onTap: () {
+                                    Navigator.pushNamed(context, "/cart");
+                                  },
+                                ),
+                              ),
+                              Expanded(
+                                flex: 1,
+                                child: CornerButtonWidget(
+                                  title: "加入购物车",
+                                  bgColor: Colors.red,
+                                  callbackHandle: () async {
+                                    if (this
+                                            ._productContentModel
+                                            .result
+                                            .attr
+                                            .length >
+                                        0) {
+                                      eventBus
+                                          .fire(ProductContentEvent("加入购物车"));
+                                    } else {
+                                      Fluttertoast.showToast(
+                                          msg: "加入购物车",
+                                          toastLength: Toast.LENGTH_SHORT,
+                                          gravity: ToastGravity.CENTER,
+                                          timeInSecForIosWeb: 1,
+                                          backgroundColor: Colors.black45,
+                                          textColor: Colors.white,
+                                          fontSize: 16.0
+                                      );
+                                      await CartService.addProductToCart(this._productContentModel.result);
+                                      context.read<CartProvider>().updateCartListData();
+                                    }
+                                  },
+                                ),
+                              ),
+                              Expanded(
+                                  flex: 1,
+                                  child: CornerButtonWidget(
+                                    title: "立即购买",
+                                    bgColor: Colors.yellow,
+                                    callbackHandle: () {
+                                      if (this
+                                              ._productContentModel
+                                              .result
+                                              .attr
+                                              .length >
+                                          0) {
+                                        eventBus
+                                            .fire(ProductContentEvent("加入购物车"));
+                                      } else {
+                                        print("加入购物车");
+                                      }
+                                    },
+                                  ))
+                            ],
+                          ),
+                        ))
+                  ],
+                )
+              : LoadingWidget(),
         ));
   }
 }

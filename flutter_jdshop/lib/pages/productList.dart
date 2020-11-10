@@ -142,7 +142,7 @@ class _ProductListPageState extends State<ProductListPage> {
   Widget _screenHeaderWidget() {
     return Positioned(
       height: ScreenAdapter.height(90),
-      width: ScreenAdapter.width(ScreenAdapter.screenWidth()),
+      width: ScreenAdapter.width(ScreenAdapter.designWidth()),
       child: Container(
         child: Row(
           children: this._subHeaderList.map((value) {

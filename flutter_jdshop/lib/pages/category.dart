@@ -90,19 +90,21 @@ class _CategoryPageState extends State<CategoryPage>
                 return InkWell(
                   child: Container(
                       child: Column(
-                        children: <Widget>[
-                          AspectRatio(
-                              aspectRatio: 1 / 1,
-                              child: Image.network("$picUrlString",
-                                  fit: BoxFit.cover)),
-                          Container(
-                              height: textHeight,
-                              child:
+                    children: <Widget>[
+                      AspectRatio(
+                          aspectRatio: 1 / 1,
+                          child: Image.network("$picUrlString",
+                              fit: BoxFit.cover)),
+                      Container(
+                          height: textHeight,
+                          child:
                               Text("${this._rightCategoryList[index].title}"))
-                        ],
-                      )),
+                    ],
+                  )),
                   onTap: () {
-                    Navigator.of(context).pushNamed("/productList", arguments:{"cid": "${this._rightCategoryList[index].sId}"});
+                    Navigator.of(context).pushNamed("/productList", arguments: {
+                      "cid": "${this._rightCategoryList[index].sId}"
+                    });
                   },
                 );
               },
@@ -156,22 +158,46 @@ class _CategoryPageState extends State<CategoryPage>
     //size计算
     double _axisSpacing = ScreenAdapter.width(20);
     double _padding = ScreenAdapter.width(16);
-    double _itemWidth = ScreenAdapter.width(ScreenAdapter.screenWidth() / 4) -
+    double _itemWidth = (ScreenAdapter.width(ScreenAdapter.designWidth() * 3 / 4) -
         (_axisSpacing * 2) -
-        _padding * 2;
+        _padding * 2) / 4;
     double _textHeight = ScreenAdapter.height(40);
-    double _itemHeight = _itemWidth + _textHeight;
-
+    double _itemHeight = _itemWidth + _textHeight + _padding * 2;
     // TODO: implement build
-    return Row(
-      children: <Widget>[
-        this._leftCategoryListWidget(),
-        this._rightCategoryListWidget(
-            _padding, _axisSpacing, _itemWidth, _itemHeight, _textHeight)
-      ],
+    return Scaffold(
+      appBar: AppBar(
+        title: RawMaterialButton(
+          onPressed: () {
+            Navigator.pushNamed(context, "/search");
+          },
+          child: Row(
+            children: <Widget>[
+              Icon(
+                Icons.search,
+                size: ScreenAdapter.height(36),
+              ),
+              Text("搜索")
+            ],
+          ),
+          fillColor: Color.fromRGBO(233, 233, 233, 0.8),
+          padding: EdgeInsets.only(left: ScreenAdapter.width(20)),
+          shape: StadiumBorder(side: BorderSide.none),
+        ),
+        leading:
+            IconButton(icon: Icon(Icons.center_focus_weak), onPressed: () {}),
+        actions: <Widget>[
+          IconButton(icon: Icon(Icons.message), onPressed: () {})
+        ],
+      ),
+      body: Row(
+        children: <Widget>[
+          this._leftCategoryListWidget(),
+          this._rightCategoryListWidget(
+              _padding, _axisSpacing, _itemWidth, _itemHeight, _textHeight)
+        ],
+      ),
     );
   }
-
   @override
   // TODO: implement wantKeepAlive
   bool get wantKeepAlive => true;

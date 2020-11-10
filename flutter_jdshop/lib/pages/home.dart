@@ -16,7 +16,8 @@ class MyHomePage extends StatefulWidget {
   }
 }
 
-class _MyHomePageState extends State<MyHomePage> with AutomaticKeepAliveClientMixin {
+class _MyHomePageState extends State<MyHomePage>
+    with AutomaticKeepAliveClientMixin {
   //轮播图
   Widget _swiperWidget() {
     if (this._focusModel != null && this._focusModel.result.length > 0) {
@@ -26,7 +27,8 @@ class _MyHomePageState extends State<MyHomePage> with AutomaticKeepAliveClientMi
           child: Swiper(
             itemCount: this._focusModel.result.length,
             itemBuilder: (context, index) {
-              String picUrlString = AppConfig.domain +  this._focusModel.result[index].pic.replaceAll('\\', '/');
+              String picUrlString = AppConfig.domain +
+                  this._focusModel.result[index].pic.replaceAll('\\', '/');
               return Image.network(
                 '$picUrlString',
                 fit: BoxFit.fill,
@@ -41,6 +43,7 @@ class _MyHomePageState extends State<MyHomePage> with AutomaticKeepAliveClientMi
       return Text("加载中...");
     }
   }
+
   Widget _titleHeader(text) {
     return Container(
       margin: EdgeInsets.only(left: ScreenAdapter.width(20)),
@@ -71,15 +74,15 @@ class _MyHomePageState extends State<MyHomePage> with AutomaticKeepAliveClientMi
                   Container(
                     margin: EdgeInsets.only(right: ScreenAdapter.width(20)),
                     width: ScreenAdapter.width(140),
-                    child: Image.network(
-                        '$picUrlString',
-                        fit: BoxFit.cover),
+                    child: Image.network('$picUrlString', fit: BoxFit.cover),
                   ),
                   Container(
                     margin: EdgeInsets.only(right: ScreenAdapter.width(20)),
                     padding: EdgeInsets.only(top: ScreenAdapter.height(10)),
-                    child: Text("¥${this._hotProductList[index].price}",
-                      style: TextStyle(color: Colors.red),),
+                    child: Text(
+                      "¥${this._hotProductList[index].price}",
+                      style: TextStyle(color: Colors.red),
+                    ),
                   )
                 ],
               );
@@ -93,19 +96,18 @@ class _MyHomePageState extends State<MyHomePage> with AutomaticKeepAliveClientMi
   }
 
   Widget _recProductListWidget() {
-    double itemWidth = ScreenAdapter.width(
-        (ScreenAdapter.width(ScreenAdapter.screenWidth()) -
-            ScreenAdapter.width(20) * 3));
+    double itemWidth = (ScreenAdapter.width(ScreenAdapter.designWidth()) -
+        ScreenAdapter.width(20) * 3 - 1);
     return Container(
       padding: EdgeInsets.all(ScreenAdapter.width(20)),
       child: Wrap(
         children: this._bestProductList.map((value) {
-          String picUrlString = AppConfig.domain +
-              value.sPic.replaceAll('\\', '/');
+          String picUrlString =
+              AppConfig.domain + value.sPic.replaceAll('\\', '/');
           return InkWell(
             child: Container(
-              width: itemWidth,
-              padding: EdgeInsets.all(ScreenAdapter.height(20)),
+              width: itemWidth / 2,
+              padding: EdgeInsets.all(ScreenAdapter.width(20)),
               decoration: BoxDecoration(border: Border.all(color: Colors.grey)),
               child: Column(
                 children: <Widget>[
@@ -141,18 +143,19 @@ class _MyHomePageState extends State<MyHomePage> with AutomaticKeepAliveClientMi
                           alignment: Alignment.centerRight,
                           child: Text(
                             '¥${value.oldPrice}',
-                            style: TextStyle(color: Colors.black54,
+                            style: TextStyle(
+                                color: Colors.black54,
                                 fontSize: 15,
                                 decoration: TextDecoration.lineThrough),
                           ),
                         )
-                      ])
-                  )
+                      ]))
                 ],
               ),
             ),
             onTap: () {
-              Navigator.of(context).pushNamed("/productContent", arguments: {"productId": value.sId});
+              Navigator.of(context).pushNamed("/productContent",
+                  arguments: {"productId": value.sId});
             },
           );
         }).toList(),
@@ -171,24 +174,29 @@ class _MyHomePageState extends State<MyHomePage> with AutomaticKeepAliveClientMi
       this._focusModel = FocusModel.fromJson(respondData.data);
     });
   }
+
   //猜你喜欢数据
   List<ProductItem> _hotProductList = [];
   _fetchHotProductModelData() async {
-    String requestUrlString = AppConfig.domain + ApiConfig.productListApi + "?is_hot=1";
+    String requestUrlString =
+        AppConfig.domain + ApiConfig.productListApi + "?is_hot=1";
     var respondData = await Dio().get(requestUrlString);
     setState(() {
       this._hotProductList = ProductModel.fromJson(respondData.data).result;
     });
   }
+
   //热门推荐数据
   List<ProductItem> _bestProductList = [];
   _fetchBestProductModelData() async {
-    String requestUrlString = AppConfig.domain + ApiConfig.productListApi + "?is_best=1";
+    String requestUrlString =
+        AppConfig.domain + ApiConfig.productListApi + "?is_best=1";
     var respondData = await Dio().get(requestUrlString);
     setState(() {
       this._bestProductList = ProductModel.fromJson(respondData.data).result;
     });
   }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -202,22 +210,49 @@ class _MyHomePageState extends State<MyHomePage> with AutomaticKeepAliveClientMi
   Widget build(BuildContext context) {
     ScreenAdapter.init(context);
     // TODO: implement build
-    return ListView(
-      children: <Widget>[
-        _swiperWidget(),
-        SizedBox(
-          height: ScreenAdapter.height(10),
+    return Scaffold(
+      appBar: AppBar(
+        title: RawMaterialButton(
+          onPressed: () {
+            Navigator.pushNamed(context, "/search");
+          },
+          child: Row(
+            children: <Widget>[
+              Icon(
+                Icons.search,
+                size: ScreenAdapter.height(36),
+              ),
+              Text("搜索")
+            ],
+          ),
+          fillColor: Color.fromRGBO(233, 233, 233, 0.8),
+          padding: EdgeInsets.only(left: ScreenAdapter.width(20)),
+          shape: StadiumBorder(side: BorderSide.none),
         ),
-        _titleHeader("猜你喜欢"),
-        SizedBox(
-          height: ScreenAdapter.height(10),
-        ),
-        _hotProductListWidget(),
-        _titleHeader("热门推荐"),
-        _recProductListWidget()
-      ],
+        leading:
+            IconButton(icon: Icon(Icons.center_focus_weak), onPressed: () {}),
+        actions: <Widget>[
+          IconButton(icon: Icon(Icons.message), onPressed: () {})
+        ],
+      ),
+      body: ListView(
+        children: <Widget>[
+          _swiperWidget(),
+          SizedBox(
+            height: ScreenAdapter.height(10),
+          ),
+          _titleHeader("猜你喜欢"),
+          SizedBox(
+            height: ScreenAdapter.height(10),
+          ),
+          _hotProductListWidget(),
+          _titleHeader("热门推荐"),
+          _recProductListWidget()
+        ],
+      ),
     );
   }
+
   @override
   // TODO: implement wantKeepAlive
   bool get wantKeepAlive => true;
