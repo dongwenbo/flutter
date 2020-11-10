@@ -16,7 +16,7 @@ class Tabs extends StatefulWidget {
   }
 }
 
-class _TabsState extends State<StatefulWidget> {
+class _TabsState extends State<Tabs> {
   int _currentIndex = 0;
   List pages = [HomePage1(), ContactsBookPage(), SearchPage(), SettingPage()];
 
@@ -25,26 +25,26 @@ class _TabsState extends State<StatefulWidget> {
     // TODO: implement build
     return Scaffold(
       body: this.pages[this._currentIndex],
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: Container(
-        height: 80.0,
-        width: 80.0,
-        padding: EdgeInsets.all(8.0),
-        margin: EdgeInsets.only(top: 10.0),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(40.0),
-        ),
-        child: FloatingActionButton (
-          child: Icon(Icons.add, size: 40,),
-          backgroundColor: this._currentIndex == 1 ? Colors.red : Colors.yellow,
-          onPressed: (){
-            setState(() {
-              this._currentIndex = 1;
-            });
-          },
-        ),
-      ),
+//      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+//      floatingActionButton: Container(
+//        height: 80.0,
+//        width: 80.0,
+//        padding: EdgeInsets.all(8.0),
+//        margin: EdgeInsets.only(top: 10.0),
+//        decoration: BoxDecoration(
+//          color: Colors.white,
+//          borderRadius: BorderRadius.circular(40.0),
+//        ),
+//        child: FloatingActionButton (
+//          child: Icon(Icons.add, size: 40,),
+//          backgroundColor: this._currentIndex == 1 ? Colors.red : Colors.yellow,
+//          onPressed: (){
+//            setState(() {
+//              this._currentIndex = 1;
+//            });
+//          },
+//        ),
+//      ),
       bottomNavigationBar: BottomNavigationBar(
         items: [
           BottomNavigationBarItem(icon: Icon(Icons.home), title: Text("首页")),

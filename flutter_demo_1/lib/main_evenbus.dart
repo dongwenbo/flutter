@@ -1,27 +1,15 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:event_bus/event_bus.dart';
 
 void main() {
-  runApp(
-    /// Providers are above [MyApp] instead of inside it, so that tests
-    /// can use [MyApp] while mocking the providers
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => Counter()),
-      ],
-      child: MyApp(),
-    ),
-  );
+  runApp(MyApp());
 }
 
-class Counter with ChangeNotifier {
-  int _count = 0;
-  int get count => _count;
-  void increment() {
-    _count++;
-    notifyListeners();
-  }
+EventBus eventBus = EventBus();
+class Counter {
+  String text;
+  Counter(this.text);
 }
 
 class MyApp extends StatefulWidget {
@@ -33,16 +21,13 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  List<Widget> _pages = [MyHomePage(), MinePage()];
+  List<Widget> _pages = [MyHomePage(), SearchPage(),MinePage()];
   int _currentIndex = 0;
-  PageController _pageController;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    this._pageController = PageController(initialPage: this._currentIndex);
   }
-
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -51,20 +36,20 @@ class _MyAppState extends State<MyApp> {
         appBar: AppBar(
           title: Text("demo"),
         ),
-        body: PageView(
-          controller: this._pageController,
+        body: IndexedStack(
+          index: this._currentIndex,
           children: _pages,
         ),
         bottomNavigationBar: BottomNavigationBar(
           currentIndex: this._currentIndex,
           items: [
             BottomNavigationBarItem(icon: Icon(Icons.home), title: Text("首页")),
+            BottomNavigationBarItem(icon: Icon(Icons.search), title: Text("搜索")),
             BottomNavigationBarItem(icon: Icon(Icons.people), title: Text("我")),
           ],
           onTap: (index) {
             setState(() {
               this._currentIndex = index;
-              this._pageController.jumpToPage(index);
             });
           },
         ),
@@ -73,46 +58,114 @@ class _MyAppState extends State<MyApp> {
   }
 }
 
+// ignore: must_be_immutable
 class MyHomePage extends StatelessWidget {
-  const MyHomePage({Key key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text('You have pushed the button this many times:'),
-            Text('${context.watch<Counter>().count}',
-                style: Theme.of(context).textTheme.headline4)
-          ],
+          mainAxisAlignment: MainAxisAlignment.center
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => context.read<Counter>().increment(),
+        onPressed: (){ eventBus.fire(Counter("count"));
+        print("123wetrqw");},
         tooltip: 'Increment',
         child: const Icon(Icons.add),
       ),
     );
   }
 }
+class SearchPage extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    // TODO: implement createState
+  return _SearchState();
+  }
+}
 
-class MinePage extends StatelessWidget {
-  const MinePage({Key key}) : super(key: key);
+class _SearchState extends State<SearchPage> {
+  int _count = 0;
+  var _countEvent;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+   this._countEvent = eventBus.on<Counter>().listen((event) {
+      setState(() {
+        this._count += 1;
+        print("sdfasd");
+      });
+    });
+  }
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    this._countEvent.cancel();
+  }
   @override
   Widget build(BuildContext context) {
+    // TODO: implement build
     return Scaffold(
       body: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text('${context.watch<Counter>().count}',
+            Text('${this._count}',
                 style: Theme.of(context).textTheme.headline4)
           ],
         ),
       ),
     );
   }
+}
+
+class MinePage extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    // TODO: implement createState
+    return _MineState();
+  }
+}
+
+class _MineState extends State<MinePage> {
+  int _count = 0;
+  var _countEvent;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    this._countEvent = eventBus.on<Counter>().listen((event) {
+      setState(() {
+        this._count += 1;
+      });
+    });
+  }
+//  @override
+//  void dispose() {
+//    // TODO: implement dispose
+//    super.dispose();
+//    this._countEvent.cancel();
+//  }
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return Scaffold(
+      body: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text('${this._count}',
+                style: Theme.of(context).textTheme.headline4)
+          ],
+        ),
+      ),
+    );
+  }
+
 }
